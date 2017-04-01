@@ -24,6 +24,7 @@ function load(url: string) {
     }).retryWhen(retryStrategy({ attempts: 3, delay: 1500 }));
 }
 
+//Mispell movies.json like moviess.json to see this in action. 
 function retryStrategy({ attempts = 4, delay = 1000 }) {
     return function (errors) {
         return errors
@@ -36,12 +37,6 @@ function retryStrategy({ attempts = 4, delay = 1000 }) {
     }
 }
 
-function loadWithFetch(url: string) {
-    return Observable.defer(() => {
-        return Observable.fromPromise(fetch(url).then(r => r.json()));
-    });    
-}
-
 function renderMovies(movies) {
     movies.forEach(m => {
         let div = document.createElement("div");
@@ -50,9 +45,9 @@ function renderMovies(movies) {
     })
 }
 
-loadWithFetch("movies.json").subscribe(renderMovies);
+load("movies.json").subscribe(renderMovies);
 
-click.flatMap(e => loadWithFetch("movies.json"))
+click.flatMap(e => load("movies.json"))
     .subscribe(
     renderMovies,
     e => console.log(`error: ${e}`),
